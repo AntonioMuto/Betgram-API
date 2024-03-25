@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 class UsersController {
 
     constructor(app, dbConnection) {
@@ -6,6 +8,7 @@ class UsersController {
         this.retrieveAllUser();
         this.retrieveUserByUsername();
         this.insertUser();
+        this.checkUser();
     }
 
     retrieveAllUser() {
@@ -31,6 +34,28 @@ class UsersController {
                         res.json({ rows });
                     } else {
                         res.status(404).json({ error: "USER NOT FOUND :(" });
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+
+    checkUser(){
+        this.app.post('/api/login/user', async (req, res) => {
+            try {
+                this.dbConnection.query(`SELECT * FROM innodb.T_USERS WHERE EMAIL = "${req.body.email}" AND  PASSWORD = "${req.body.password}";`, function (err, rows, fields) {
+                    if (err) {
+                        res.status(500).json({ error: 'Errore durante la chiamata' + err });
+                        return;
+                    } else{
+                        if(rows.length > 0){
+                            res.status(200).json({login: true})
+                        } else{
+                            res.status(404).json({login: false})
+                        }
                     }
                 });
             } catch (error) {
