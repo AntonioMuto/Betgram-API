@@ -46,15 +46,19 @@ class UsersController {
     checkUser(){
         this.app.post('/api/login/user', async (req, res) => {
             try {
-                this.dbConnection.query(`SELECT * FROM innodb.T_USERS WHERE EMAIL = "${req.body.email}" AND  PASSWORD = "${req.body.password}";`, function (err, rows, fields) {
+                this.dbConnection.query(`SELECT * FROM innodb.T_USERS WHERE EMAIL = "${req.body.email}";`, async function (err, rows, fields) {
                     if (err) {
                         res.status(500).json({ error: 'Errore durante la chiamata' + err });
                         return;
                     } else{
                         if(rows.length > 0){
-                            res.status(200).json({login: true})
+                            if(await bcrypt.compare(req.body.password,rows[0].PASSWORD)){
+                                res.status(200).json({login: true})
+                            } else{
+                                res.status(404).json({login: false})
+                            }
                         } else{
-                            res.status(404).json({login: false})
+                            res.status(404).json({error: "EMAIL NON ESISTENTE"})
                         }
                     }
                 });
