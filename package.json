@@ -6,5 +6,8 @@
     "megajs": "^1.1.7",
     "mysql": "^2.18.1",
     "request": "^2.88.2"
+  },
+  "scripts": {
+    "start": "node --no-warnings main.js"
   }
 }
