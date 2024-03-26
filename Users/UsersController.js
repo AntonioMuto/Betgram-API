@@ -53,7 +53,7 @@ class UsersController {
                     } else{
                         if(rows.length > 0){
                             if(await bcrypt.compare(req.body.password,rows[0].PASSWORD)){
-                                res.status(200).json({login: true})
+                                res.status(200).json({login: true, user: { email: rows[0].EMAIL, username: rows[0].USERNAME}})
                             } else{
                                 res.status(404).json({login: false})
                             }
