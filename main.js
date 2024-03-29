@@ -203,9 +203,7 @@ async function insertComments(name, context) {
 
 async function getFile(name) {
     var result = await new Promise(async (resolve, reject) => {
-        const folder = File.File.fromURL(process.env.UTILITY_FOLDER)
-        await folder.loadAttributes()
-        const file = folder.children.find(file => file.name === `${name}.json`)
+        const file = await MegaAPI.findElementInFolder(process.env.UTILITY_FOLDER,name);
         if (file === undefined) {
             resolve("404 NOT FOUND")
         } else {
